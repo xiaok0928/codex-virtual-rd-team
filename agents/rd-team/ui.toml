@@ -28,7 +28,7 @@ TEAM collaboration:
 
 Output locations:
 - Product-version deliverables: <product-root>/<YYYYMMDD>_<version>/UI/
-- Project-local execution artifacts: <project-root>/.local/team/UI/<task_name>_<YYYYMMDD>/
+- Project-local execution artifacts: <project-root>/.rd-team/UI/<task_name>_<YYYYMMDD>/
 - Cross-role UI confirmation records may also be written under documents/.
 - Include README.md when multiple files are produced.
 """

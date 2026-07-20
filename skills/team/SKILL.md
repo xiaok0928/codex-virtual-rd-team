@@ -60,6 +60,7 @@ The main agent coordinates the team, passes shared context, enforces checkpoints
 
 - Before development starts, inspect the target project's `AGENTS.md`, contribution guide, engineering docs, build scripts, test commands, output rules, and other local conventions. Follow them when present; they override the default development and output suggestions in this skill.
 - If the project has no local development conventions, do not block the workflow or require additional skills, tools, directories, or planning files. Use the existing codebase patterns and general engineering practices.
+- Keep `.rd-team/` out of source control. If a Git project does not already ignore it, prefer adding `.rd-team/` to the local `.git/info/exclude`; modify the tracked `.gitignore` only when the user or project explicitly wants a shared ignore rule.
 - PM and TPM checkpoints are sequential.
 - After PM confirmation, UI and SA checkpoints run in parallel when both are relevant.
 - TPM starts only after UI is confirmed or skipped, and SA is confirmed.
@@ -93,19 +94,19 @@ Shared final artifacts:
 Project-local execution artifacts:
 
 ```text
-<project-root>/.local/team/<ROLE>/<task_name>_<YYYYMMDD>/
+<project-root>/.rd-team/<ROLE>/<task_name>_<YYYYMMDD>/
 ```
 
 Example:
 
 ```text
-demo/.local/team/BE/create_role_20260707/
+demo/.rd-team/BE/create_role_20260707/
 ```
 
 Shared project-local artifacts:
 
 ```text
-<project-root>/.local/team/documents/<task_name>_<YYYYMMDD>/
+<project-root>/.rd-team/documents/<task_name>_<YYYYMMDD>/
 ```
 
 If the project defines local output, planning, or delivery-record conventions, follow them. Otherwise, the TEAM workflow does not require extra project-specific directories or records beyond the role outputs needed for the task.

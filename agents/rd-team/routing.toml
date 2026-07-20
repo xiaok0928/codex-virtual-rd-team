@@ -10,8 +10,9 @@ product_workspace_aware = true
 code_project_required_for_code_work = true
 product_version_output_pattern = "<product-root>/<YYYYMMDD>_<version>/<ROLE>/"
 product_documents_pattern = "<product-root>/<YYYYMMDD>_<version>/documents/"
-project_local_output_pattern = "<project-root>/.local/team/<ROLE>/<task_name>_<YYYYMMDD>/"
-project_local_documents_pattern = "<project-root>/.local/team/documents/<task_name>_<YYYYMMDD>/"
+project_local_output_pattern = "<project-root>/.rd-team/<ROLE>/<task_name>_<YYYYMMDD>/"
+project_local_documents_pattern = "<project-root>/.rd-team/documents/<task_name>_<YYYYMMDD>/"
+version_control_isolation_rule = "Keep .rd-team/ out of source control. If a Git project does not already ignore it, prefer the local .git/info/exclude. Modify tracked .gitignore only when the project explicitly wants a shared ignore rule."
 workspace_routing_rule = "A top-level product workspace may contain frontend, backend, called services, and SRE/deployment projects. Keep final version-level deliverables in the product version folder. For code discovery or edits, identify the affected code project(s), follow each project's local development guidance when present, and use that project's build and test commands. If no local guidance exists, use appropriate general engineering practices without requiring extra tooling."
 output_priority_rule = "Project-local output and documentation conventions take priority when present. Otherwise, if the user gives a product root and version, or PM PRD defines a product version, use product-version output for version-level deliverables. For concrete code repositories without local output rules, the default project-local patterns may be used for process notes and role execution records."
 

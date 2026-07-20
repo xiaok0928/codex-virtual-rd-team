@@ -176,9 +176,11 @@ Meeting Room 用于讨论、评审和决策，不替代 `/team` 的交付流程�
 项目内执行产物：
 
 ```text
-<project-root>/.local/team/<ROLE>/<task_name>_<YYYYMMDD>/
-<project-root>/.local/team/documents/<task_name>_<YYYYMMDD>/
+<project-root>/.rd-team/<ROLE>/<task_name>_<YYYYMMDD>/
+<project-root>/.rd-team/documents/<task_name>_<YYYYMMDD>/
 ```
+
+`.rd-team/` 用于保存虚拟团队运行过程中产生的计划、讨论记录、报告和其他辅助产物。本仓库已经通过 `.gitignore` 忽略该目录。在其他 Git 项目中使用时，如果项目尚未忽略 `.rd-team/`，建议将 `.rd-team/` 加入本地 `.git/info/exclude`，这样不会修改项目受版本控制的文件，也不会让运行产物进入业务代码提交；只有团队希望共享这条规则时才写入项目 `.gitignore`。
 
 ## 本地开发规范
 

@@ -48,5 +48,5 @@ TEAM shared workflow sync:
 - QA writes test cases and leads review with relevant team members before using them as the testing baseline. If test cases are disputed, PM and SA participate and drive agreement.
 - QA tests against agreed cases after BE/FE development, BE/FE fix bugs, QA retests, and the loop continues until all agreed cases pass. QA then outputs the final test report.
 - Product-version deliverables go under <product-root>/<YYYYMMDD>_<version>/PM/; shared final artifacts go under <product-root>/<YYYYMMDD>_<version>/documents/.
-- Project-local execution artifacts go under <project-root>/.local/team/PM/<task_name>_<YYYYMMDD>/; shared project-local artifacts go under <project-root>/.local/team/documents/<task_name>_<YYYYMMDD>/.
+- Project-local execution artifacts go under <project-root>/.rd-team/PM/<task_name>_<YYYYMMDD>/; shared project-local artifacts go under <project-root>/.rd-team/documents/<task_name>_<YYYYMMDD>/.
 """

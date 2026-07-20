@@ -50,6 +50,8 @@ Use it together with `~/.codex/skills/`. Skills describe trigger/workflow behavi
 
 The following locations are defaults. If the target project defines local documentation, output, naming, or delivery conventions, those project-local rules take priority. If no local convention exists, use only the role outputs needed for the task and do not require extra tooling or records.
 
+Keep `.rd-team/` out of source control. In Git projects that do not already ignore it, prefer adding `.rd-team/` to the local `.git/info/exclude`. Modify a tracked `.gitignore` only when the project explicitly wants to share the ignore rule.
+
 Product-version deliverables:
 
 ```text
@@ -71,19 +73,19 @@ Shared final artifacts:
 Project-local execution artifacts:
 
 ```text
-<project-root>/.local/team/<ROLE>/<task_name>_<YYYYMMDD>/
+<project-root>/.rd-team/<ROLE>/<task_name>_<YYYYMMDD>/
 ```
 
 Example:
 
 ```text
-demo/.local/team/BE/create_role_20260707/
+demo/.rd-team/BE/create_role_20260707/
 ```
 
 Shared project-local artifacts:
 
 ```text
-<project-root>/.local/team/documents/<task_name>_<YYYYMMDD>/
+<project-root>/.rd-team/documents/<task_name>_<YYYYMMDD>/
 ```
 
 Rules:

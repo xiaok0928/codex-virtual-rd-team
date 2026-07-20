@@ -39,8 +39,10 @@ For product-version output:
 For project-local execution artifacts:
 
 ```text
-<project-root>/.local/team/UI/<task_name>_<YYYYMMDD>/
+<project-root>/.rd-team/UI/<task_name>_<YYYYMMDD>/
 ```
+
+Keep `.rd-team/` out of source control. For Git projects without an existing ignore rule, prefer the local `.git/info/exclude` unless the project explicitly wants a shared `.gitignore` rule.
 
 UI-owned artifacts such as visual guidelines, page designs, sliced assets, specs, and handoff notes go under `UI/`. Cross-role UI confirmation records may also go under `documents/`.
 

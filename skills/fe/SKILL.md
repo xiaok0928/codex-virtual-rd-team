@@ -27,8 +27,10 @@ For TEAM work, follow the TEAM Output Locations rule. FE-owned artifacts go unde
 When working inside a project repository, use:
 
 ```text
-.local/team/FE/<task_name>_<YYYYMMDD>/
+.rd-team/FE/<task_name>_<YYYYMMDD>/
 ```
+
+Keep `.rd-team/` out of source control. For Git projects without an existing ignore rule, prefer the local `.git/info/exclude` unless the project explicitly wants a shared `.gitignore` rule.
 
 If the project defines local output or delivery-record conventions, follow them. Otherwise, do not require an additional delivery record.
 
