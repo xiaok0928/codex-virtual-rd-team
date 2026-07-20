@@ -30,8 +30,8 @@
 ### 1. 克隆仓库
 
 ```bash
-git clone https://github.com/xiaok0928/codex-skills.git
-cd codex-skills
+git clone https://github.com/xiaok0928/codex-virtual-rd-team.git
+cd codex-virtual-rd-team
 ```
 
 ### 2. 安装团队 Skills 和 Agents
@@ -51,7 +51,7 @@ cp -R agents/rd-team ~/.codex/agents/
 将本仓库添加为插件 marketplace：
 
 ```bash
-codex plugin marketplace add xiaok0928/codex-skills
+codex plugin marketplace add xiaok0928/codex-virtual-rd-team
 codex plugin marketplace list
 ```
 
