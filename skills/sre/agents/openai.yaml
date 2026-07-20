@@ -1,0 +1,7 @@
+interface:
+  display_name: "SRE"
+  short_description: "Reliability, deployment, and runtime support"
+  brand_color: "#EF4444"
+  default_prompt: "$sre 评估一个发布或可靠性变更"
+policy:
+  allow_implicit_invocation: true

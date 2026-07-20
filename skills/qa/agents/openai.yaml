@@ -1,0 +1,7 @@
+interface:
+  display_name: "QA"
+  short_description: "Test design and quality checks"
+  brand_color: "#F59E0B"
+  default_prompt: "$qa 设计一个测试方案"
+policy:
+  allow_implicit_invocation: true

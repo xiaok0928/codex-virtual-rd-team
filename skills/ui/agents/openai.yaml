@@ -1,0 +1,7 @@
+interface:
+  display_name: "UI"
+  short_description: "Visual design, page design, and UI handoff"
+  brand_color: "#F97316"
+  default_prompt: "$ui 设计一个功能页面并输出切图与标注"
+policy:
+  allow_implicit_invocation: true

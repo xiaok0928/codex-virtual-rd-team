@@ -1,0 +1,104 @@
+name = "rd-team-routing"
+description = "Automatic routing rules for selecting virtual R&D team roles and enforcing PM/UI/SA/TPM workflow, parallel execution, contract gates, QA loop, and output locations."
+
+[defaults]
+mode = "auto_triage"
+ask_before_full_team = true
+prefer_minimal_roles = true
+workspace_outputs_only = true
+product_workspace_aware = true
+code_project_required_for_code_work = true
+product_version_output_pattern = "<product-root>/<YYYYMMDD>_<version>/<ROLE>/"
+product_documents_pattern = "<product-root>/<YYYYMMDD>_<version>/documents/"
+project_local_output_pattern = "<project-root>/.local/team/<ROLE>/<task_name>_<YYYYMMDD>/"
+project_local_documents_pattern = "<project-root>/.local/team/documents/<task_name>_<YYYYMMDD>/"
+workspace_routing_rule = "A top-level product workspace may contain frontend, backend, called services, and SRE/deployment projects. Keep final version-level deliverables in the product version folder. For code discovery or edits, identify the affected code project(s), follow each project's local development guidance when present, and use that project's build and test commands. If no local guidance exists, use appropriate general engineering practices without requiring extra tooling."
+output_priority_rule = "Project-local output and documentation conventions take priority when present. Otherwise, if the user gives a product root and version, or PM PRD defines a product version, use product-version output for version-level deliverables. For concrete code repositories without local output rules, the default project-local patterns may be used for process notes and role execution records."
+
+[team_workflow]
+roles = ["pm", "sa", "tpm", "ui", "be", "fe", "qa", "sre"]
+initial_alignment = "Bring up PM, SA, TPM, UI, BE, FE, QA, and SRE. Each role states its initial reading. UI must comment on visual consistency, interaction complexity, page layout, design assets, cross-platform adaptation, feasibility, experience risks, and design effort risks."
+pm_gate = "After alignment, PM produces the PRD, current-version scope, non-goals, deferred items, risks, and acceptance criteria for user confirmation."
+parallel_after_pm = "After PM confirmation, UI and SA run in parallel when both are relevant. UI produces visual direction, page design plan, and UI deliverable plan. SA produces system boundary and solution constraints. TPM starts only after UI is confirmed or skipped, and SA is confirmed."
+tpm_gate = "TPM decomposes work, assigns ownership, and includes UI deliverables, dependencies, and timing when UI is involved. User confirms TPM before execution."
+execution = "After TPM confirmation, distribute work to UI, BE, FE, QA, and SRE as needed. Run independent role work in parallel by default."
+ui_contract = "UI deliverables are reviewed by PM, updated until PM and UI agree, then confirmed by the user. FE and UI must align on the design contract before FE implements UI pages. PM coordinates if UI/FE disagree or implementation cost/behavior conflicts with PRD."
+api_contract = "BE and FE must align on the API contract before integration implementation. Parallel BE/FE development starts only after both sides confirm the API contract."
+qa_loop = "QA writes test cases and leads test case review with relevant members. QA cases use PM PRD and confirmed UI deliverables when UI exists. Disputed test cases require PM and SA participation. QA tests after BE/FE complete, BE/FE fix bugs, QA retests, and the loop continues until all agreed cases pass. QA then outputs final test report."
+
+[[routes]]
+id = "backend_only_small"
+when = "Small backend-only change, such as endpoint logic, validation, query adjustment, service fix, or backend bugfix without unclear product semantics."
+roles = ["be"]
+notes = "Use when no frontend, UI, product, architecture, QA, or SRE change is needed."
+
+[[routes]]
+id = "frontend_only_small"
+when = "Small frontend-only change, such as display text, layout fix, component behavior, client-side state, or API rendering adjustment without backend change."
+roles = ["fe"]
+skills = []
+notes = "Use when the API contract and UI design contract are stable and only FE implementation changes."
+
+[[routes]]
+id = "ui_only_small"
+when = "Small visual, layout, icon, slicing, style, or design handoff change without code implementation."
+roles = ["ui"]
+skills = []
+notes = "Use for UI design artifacts, visual specs, slicing, and page design updates."
+
+[[routes]]
+id = "fullstack_small"
+when = "Small full-stack change requiring backend and frontend, with clear behavior and limited blast radius."
+roles = ["be", "fe"]
+notes = "BE and FE first align on API contract, then develop in parallel."
+
+[[routes]]
+id = "ui_frontend_small"
+when = "Small UI plus frontend implementation change requiring design handoff and FE implementation."
+roles = ["ui", "fe"]
+skills = []
+notes = "UI and FE align on design contract before FE implements pages. Involve PM if design or implementation dispute affects product intent."
+
+[[routes]]
+id = "product_unclear"
+when = "Requirement semantics, user value, version scope, acceptance criteria, null/zero behavior, or business edge cases are unclear."
+roles = ["pm", "tpm"]
+skills = []
+notes = "PM writes PRD/current-version scope without planning files, then TPM decides whether implementation roles are needed."
+
+[[routes]]
+id = "architecture_risk"
+when = "Service boundaries, storage topology, high concurrency, distributed state, data consistency, cache/time-series coordination, or cross-module contracts are affected."
+roles = ["pm", "sa", "tpm", "be"]
+notes = "Add UI/FE for user-interface or API integration changes. Add QA for high-risk behavior. Follow project-local planning and development conventions when they exist; otherwise do not require extra workflow tools."
+
+[[routes]]
+id = "testing_risk"
+when = "Regression risk, complex boundary cases, concurrency/idempotency, historical data windows, zero/null behavior, UI acceptance, or user-visible correctness needs explicit validation."
+roles = ["qa"]
+skills = []
+notes = "QA can be added to any route when validation risk is high."
+
+[[routes]]
+id = "sre_risk"
+when = "CI/CD, Docker, Kubernetes, deployment, monitoring, alerting, runtime resources, secrets, reliability, rollback, or environment configuration changes are needed."
+roles = ["sre"]
+skills = []
+notes = "SRE can be added to any route when deployment, reliability, runtime, observability, or operations surface changes."
+
+[[routes]]
+id = "large_cross_module"
+when = "Large feature, unclear scope, UI and architecture involvement, multiple modules, multiple deliverables, or likely more than one implementation phase."
+roles = ["pm", "sa", "tpm", "ui", "be", "fe", "qa"]
+optional_roles = ["sre"]
+notes = "Use full TEAM flow. After PM confirmation, UI and SA run in parallel. TPM starts after UI/SA confirmation. Follow project-local planning conventions when present. Add SRE if deployment, CI/CD, runtime config, reliability, or observability changes are involved."
+
+[decision_rules]
+small_need = "Prefer BE, FE, UI, BE+FE, or UI+FE only."
+medium_need = "Add TPM when tasks need code-level decomposition, ownership assignment, dependency tracking, review gates, or execution sequencing."
+large_need = "Add PM and SA when requirements or architecture are not settled. Add UI when visual design, page design, slicing, design specs, or UI acceptance matters."
+qa_addition = "Add QA when acceptance risk, regression risk, boundary behavior, UI acceptance, or test automation is important."
+sre_addition = "Add SRE when infrastructure, CI/CD, deployment, observability, runtime reliability, rollback, or secrets are touched."
+clarification = "Ask one concise question only when role routing depends on unknown scope, product version, output location, or risk."
+deliverable_naming = "Use role folders under product-version output or project-local output. Role folder names are PM, UI, SA, TPM, BE, FE, QA, and SRE. Shared final artifacts go under documents/."
+code_project_selection = "When cwd is a product workspace, map the request to affected code projects such as a frontend app, backend service, called service, or SRE/deployment package. Follow each target project's local guidance and available discovery tools. Ask for clarification if the target project cannot be inferred."

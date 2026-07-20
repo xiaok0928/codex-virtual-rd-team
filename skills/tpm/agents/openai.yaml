@@ -1,0 +1,7 @@
+interface:
+  display_name: "TPM"
+  short_description: "Technical project management and coordination"
+  brand_color: "#14B8A6"
+  default_prompt: "$tpm 拆解并协调一个开发任务"
+policy:
+  allow_implicit_invocation: true

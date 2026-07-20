@@ -1,0 +1,7 @@
+interface:
+  display_name: "BE"
+  short_description: "Backend work for the virtual team"
+  brand_color: "#2563EB"
+  default_prompt: "$be 修复一个后端接口问题"
+policy:
+  allow_implicit_invocation: true

@@ -1,0 +1,7 @@
+interface:
+  display_name: "Team"
+  short_description: "Orchestrate the full virtual R&D team"
+  brand_color: "#2563EB"
+  default_prompt: "$team 新增一个告警阈值功能"
+policy:
+  allow_implicit_invocation: true

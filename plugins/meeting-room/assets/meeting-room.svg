@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Meeting room">
+  <rect width="512" height="512" rx="104" fill="#0F766E"/>
+  <circle cx="156" cy="142" r="42" fill="#F8FAFC"/>
+  <circle cx="356" cy="142" r="42" fill="#F8FAFC"/>
+  <circle cx="142" cy="354" r="42" fill="#F8FAFC"/>
+  <circle cx="370" cy="354" r="42" fill="#F8FAFC"/>
+  <rect x="112" y="209" width="288" height="94" rx="47" fill="#F6C85F"/>
+  <rect x="239" y="286" width="34" height="92" rx="17" fill="#F6C85F"/>
+  <path d="M98 196c12-30 33-45 58-45s46 15 58 45H98Z" fill="#F8FAFC"/>
+  <path d="M298 196c12-30 33-45 58-45s46 15 58 45H298Z" fill="#F8FAFC"/>
+  <path d="M84 408c12-30 33-45 58-45s46 15 58 45H84Z" fill="#F8FAFC"/>
+  <path d="M312 408c12-30 33-45 58-45s46 15 58 45H312Z" fill="#F8FAFC"/>
+</svg>

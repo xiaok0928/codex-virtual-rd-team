@@ -1,0 +1,7 @@
+interface:
+  display_name: "SA"
+  short_description: "Architecture and cross-module design"
+  brand_color: "#6366F1"
+  default_prompt: "$sa 评估一个架构方案"
+policy:
+  allow_implicit_invocation: true

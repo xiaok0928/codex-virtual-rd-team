@@ -1,0 +1,7 @@
+interface:
+  display_name: "PM"
+  short_description: "Product scoping and requirements"
+  brand_color: "#7C3AED"
+  default_prompt: "$pm 梳理一个需求"
+policy:
+  allow_implicit_invocation: true
