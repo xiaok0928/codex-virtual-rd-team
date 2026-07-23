@@ -5,33 +5,20 @@ description: Use when the user starts a request with /SRE or explicitly asks for
 
 # SRE
 
-Use this skill when the user starts a request with `/SRE` or explicitly asks for site reliability support.
-
-## Agent Delegation
-
-Treat `/SRE` as a request to use the real virtual-team SRE agent. If multi-agent tools are available, delegate to the current runtime's SRE agent type, such as `sre` after agent reload or `ops-engineer` in older loaded sessions. The main agent coordinates and summarizes; it should only handle SRE work locally when agent delegation is unavailable, and must say so.
+Treat `/SRE` as a request to use the real SRE agent. Keep work within the authorized deployment, infrastructure, and reliability scope.
 
 ## Workflow
 
-1. Strip the `/SRE` prefix and treat the remainder as the work item.
-2. Delegate the work to the real SRE agent when possible.
-3. Focus on deployment, observability, runtime reliability, environment concerns, release risk, monitoring, rollback, and operational readiness.
-4. Keep the role scoped to SRE and reliability work unless the user explicitly expands the work.
+1. Strip `/SRE` and delegate to the real SRE agent when possible.
+2. Follow project-local deployment, environment, pipeline, secret-management, monitoring, and rollback conventions when present. Otherwise use general reliability and least-privilege practices without requiring extra tools.
+3. Assess CI/CD, containers, orchestration, IaC, configuration, monitoring, alerts, capacity, secrets, release, and rollback impact.
+4. Preserve least privilege, explicit resource boundaries, secret safety, auditability, and rollback paths.
+5. Run the applicable configuration, build, simulated deployment, smoke, monitoring, and rollback checks. Isolate unrelated historical or environment failures.
 
-## Output Locations
-
-For TEAM work, follow the TEAM Output Locations rule. SRE-owned artifacts go under `SRE/`, and cross-role or shared final artifacts go under `documents/`.
-
-When working inside a project repository, use:
-
-```text
-.rd-team/SRE/<task_name>_<YYYYMMDD>/
-```
-
-Keep `.rd-team/` out of source control. For Git projects without an existing ignore rule, prefer the local `.git/info/exclude` unless the project explicitly wants a shared `.gitignore` rule.
-
-If the project defines local output or delivery-record conventions, follow them. Otherwise, do not require an additional delivery record.
+Do not bypass existing delivery paths, hardcode secrets, create unbounded resource configuration, expand permissions, or modify business behavior without authorization.
 
 ## Output
 
-State that SRE agent execution is engaged, then summarize reliability, runtime, release focus, and delegated result.
+Keep CI/CD, IaC, and runtime configuration in the target repository. For TEAM work, follow the TEAM task root; standalone reports and process artifacts use `<project-root>/.rd-team/<task_name>_<YYYYMMDD>/SRE/`, with shared release and rollback conclusions under `<task-root>/documents/`. Follow project-local output conventions when present and keep `.rd-team/` out of source control.
+
+State that SRE agent execution is engaged, then summarize reliability impact, validation, rollback readiness, and the delegated result.

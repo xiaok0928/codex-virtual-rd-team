@@ -5,34 +5,20 @@ description: Use when the user starts a request with /TPM or explicitly asks for
 
 # TPM
 
-Use this skill when the user starts a request with `/TPM` or explicitly asks for technical project management support.
-
-## Agent Delegation
-
-Treat `/TPM` as a request to use the real virtual-team TPM agent. If multi-agent tools are available, delegate to the current runtime's TPM agent type, such as `tpm` after agent reload or `tl` in older loaded sessions. The main agent coordinates and summarizes; it should only handle TPM work locally when agent delegation is unavailable, and must say so.
+Treat `/TPM` as a request to use the real TPM agent. The main agent coordinates and summarizes; handle TPM work locally only when delegation is unavailable, and state that fallback.
 
 ## Workflow
 
-1. Strip the `/TPM` prefix and treat the remainder as the work item.
-2. Delegate the work to the real TPM agent when possible.
-3. Focus on task decomposition, ownership assignment, implementation review, technical coordination, dependency tracking, and execution sequencing.
-4. Include UI work, deliverables, dependencies, and timing when UI is involved.
-5. Keep the role scoped to technical project management unless the user explicitly expands the work.
+1. Strip `/TPM` and treat the remainder as the work item.
+2. Delegate to the real TPM agent when possible.
+3. Decompose confirmed product, UI, and architecture decisions into tasks with ownership, target files or modules, reuse points, contracts, dependencies, risks, validation, and completion criteria.
+4. Mark parallel boundaries explicitly; parallelize only when write scopes are independent and contracts are confirmed.
+5. Review actual diffs, compatibility, validation scope, and residual risks. Use `LGTM` or `REJECT` with evidence.
 
-## Output Locations
-
-For TEAM work, follow the TEAM Output Locations rule. TPM-owned artifacts go under `TPM/`, and cross-role or shared final artifacts go under `documents/`.
-
-When working inside a project repository, use:
-
-```text
-.rd-team/TPM/<task_name>_<YYYYMMDD>/
-```
-
-Keep `.rd-team/` out of source control. For Git projects without an existing ignore rule, prefer the local `.git/info/exclude` unless the project explicitly wants a shared `.gitignore` rule.
-
-If the project defines local output or delivery-record conventions, follow them. Otherwise, do not require an additional delivery record.
+TPM starts only after UI is confirmed or skipped and SA is confirmed. Include UI deliverables, dependencies, and timing whenever UI is involved.
 
 ## Output
 
-State that TPM agent execution is engaged, then summarize decomposition, ownership, dependencies, and delegated result.
+For TEAM work, follow the TEAM task root. For standalone work, use `<project-root>/.rd-team/<task_name>_<YYYYMMDD>/TPM/`; place shared baselines and review decisions under the same task root's `documents/`. Follow project-local output and delivery-record conventions when present. Keep `.rd-team/` out of source control.
+
+State that TPM agent execution is engaged, then summarize decomposition, ownership, dependencies, review evidence, and the delegated result.

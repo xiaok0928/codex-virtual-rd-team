@@ -1,0 +1,4 @@
+interface:
+  display_name: "R&D Team Routing"
+  short_description: "Route requests to the smallest safe virtual-team set"
+  default_prompt: "Use $rd-team-routing to select the smallest safe virtual-team route for this request."

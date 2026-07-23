@@ -9,9 +9,9 @@
 ```text
 .
 ├── .agents/plugins/marketplace.json  # 仓库级插件市场
-├── agents/rd-team/                   # 8 个角色 Agent 与路由规则
+├── agents/rd-team/                   # 8 个真实角色 Agent
 ├── plugins/meeting-room/             # 会议室插件
-└── skills/                           # 团队及单角色入口 Skills
+└── skills/                           # 团队、路由及单角色入口 Skills
 ```
 
 | 角色 | 职责 |
@@ -25,6 +25,8 @@
 | QA | 测试方案、用例评审、执行、缺陷反馈、回归与质量报告 |
 | SRE | CI/CD、部署、可观测性、可靠性、回滚与发布准备 |
 
+`rd-team-routing` 是团队内部的统一路由 Skill。它负责选择最小安全角色集合、建立契约门禁、判断复杂实施是否需要文件化计划，并统一 `.rd-team/` 产物结构。通常不需要由用户直接调用。
+
 ## 安装
 
 ### 1. 克隆仓库
@@ -37,12 +39,15 @@ cd codex-virtual-rd-team
 ### 2. 安装团队 Skills 和 Agents
 
 ```bash
-mkdir -p ~/.codex/skills ~/.codex/agents
-cp -R skills/. ~/.codex/skills/
-cp -R agents/rd-team ~/.codex/agents/
+CODEX_HOME="${CODEX_HOME:-$HOME/.codex}"
+mkdir -p "$CODEX_HOME/skills" "$CODEX_HOME/agents/rd-team"
+cp -R skills/. "$CODEX_HOME/skills/"
+cp -R agents/rd-team/. "$CODEX_HOME/agents/rd-team/"
 ```
 
 如果目标目录中已经存在同名配置，请先自行备份并确认差异。Agent 配置默认使用 `gpt-5.5`；若你的 Codex 环境没有该模型，请修改 `agents/rd-team/*.toml` 中的 `model` 字段为当前可用模型。
+
+从旧版本升级时，路由已经由 `agents/rd-team/routing.toml` 迁移到 `skills/rd-team-routing/`。确认旧文件没有自定义内容后，可删除安装目录中遗留的 `agents/rd-team/routing.toml`，避免同时加载两套路由规则。
 
 复制完成后重启 Codex，并新建一个任务，使 Skills 和 Agents 重新加载。
 
@@ -95,7 +100,9 @@ Codex 官方文档说明了 `.codex-plugin/plugin.json`、仓库级 `.agents/plu
 | `/SRE` | 部署、流水线、监控、可靠性与回滚 | 仅启用 SRE Agent |
 | `/Meeting-room` | 多角色讨论、评审与决策 | 启动 Meeting Room 插件并创建真实参会 Agents |
 
-`/BF` 会选择最小安全路线：`backend_only_small`、`frontend_only_small` 或 `fullstack_small`。完整团队不会用于每个小改动，除非需求范围、架构或交付风险确实需要更多角色。
+`/BF` 会通过 `rd-team-routing` 选择最小安全路线。除了 `backend_only_small`、`frontend_only_small` 和 `fullstack_small`，路由层还支持 `ui_only_small`、`ui_frontend_small`、`product_unclear`、`architecture_risk`、`testing_risk`、`sre_risk` 和 `large_cross_module`。只有风险或规模确实需要时才增加角色。
+
+路由规则遵循三个原则：选最小安全角色集、先确认共享契约再并行、验证范围与变更风险相匹配。
 
 ## TEAM 工作流程
 
@@ -103,19 +110,29 @@ Codex 官方文档说明了 `.codex-plugin/plugin.json`、仓库级 `.agents/plu
 flowchart TD
     A[需求进入 /team] --> B[8 个角色初始对齐]
     B --> C[PM 输出 PRD 与验收标准]
-    C --> D{用户确认 PM 方案}
-    D -->|确认| E[UI 与 SA 并行]
-    D -->|否| D1[PM 根据反馈修订]
+    C --> D{用户确认 PM 方案?}
+    D -->|是| E[UI 与 SA 并行]
+    D -->|否| D1[PM 根据反馈修订 PRD]
     D1 --> D
-    E --> F{用户确认 UI 与 SA}
-    F -->|确认| G[TPM 拆解任务与分配所有权]
-    F -->|否| F1[UI 与 SA 根据反馈修订]
-    F1 --> F
-    G --> H{用户确认执行计划}
-    H -->|确认| I[UI / BE / FE / QA / SRE 按依赖并行执行]
+    E --> U[UI 方案与交付计划]
+    E --> S[SA 系统边界与架构约束]
+    U --> UQ{PM 与用户确认 UI?}
+    UQ -->|否| U1[UI 根据反馈修订]
+    U1 --> UQ
+    UQ -->|是| G
+    S --> SQ{用户确认 SA 方案?}
+    SQ -->|否| S1[SA 根据反馈修订]
+    S1 --> SQ
+    SQ -->|是| G[TPM 拆解任务与分配所有权]
+    G --> H{用户确认执行计划?}
+    H -->|是| I[UI / BE / FE / QA / SRE 按依赖并行执行]
     H -->|否| H1[TPM 根据反馈修订计划]
     H1 --> H
-    I --> J[QA 按已评审用例测试]
+    I --> T[QA 编写用例并组织评审]
+    T --> TQ{相关角色确认用例?}
+    TQ -->|否| T1[PM 与 SA 解决争议并修订用例]
+    T1 --> TQ
+    TQ -->|是| J[QA 按已评审用例测试]
     J --> K{全部用例通过?}
     K -->|否| L[BE / FE 修复]
     L --> J
@@ -170,23 +187,26 @@ Meeting Room 用于讨论、评审和决策，不替代 `/team` 的交付流程�
 
 ## 产物目录
 
-以下目录是虚拟团队的默认建议。目标项目已有文档目录、产物命名或交付记录规范时，应以项目本地规范为准；没有本地规范时，也不强制创建与当前任务无关的额外目录或记录。
+以下目录是虚拟团队的可移植默认值。目标项目已有文档目录、产物命名或交付记录规范时，以项目本地规范为准；没有本地规范时，不强制创建与当前任务无关的额外目录或记录。
 
-产品版本级产物：
-
-```text
-<product-root>/<YYYYMMDD>_<version>/<ROLE>/
-<product-root>/<YYYYMMDD>_<version>/documents/
-```
-
-项目内执行产物：
+每个任务使用一个根目录：
 
 ```text
-<project-root>/.rd-team/<ROLE>/<task_name>_<YYYYMMDD>/
-<project-root>/.rd-team/documents/<task_name>_<YYYYMMDD>/
+<project-root>/.rd-team/<task_name>_<YYYYMMDD>/
 ```
 
-`.rd-team/` 用于保存虚拟团队运行过程中产生的计划、讨论记录、报告和其他辅助产物。本仓库已经通过 `.gitignore` 忽略该目录。在其他 Git 项目中使用时，如果项目尚未忽略 `.rd-team/`，建议将 `.rd-team/` 加入本地 `.git/info/exclude`，这样不会修改项目受版本控制的文件，也不会让运行产物进入业务代码提交；只有团队希望共享这条规则时才写入项目 `.gitignore`。
+角色、版本、共享文档和复杂任务计划均放在该根目录下：
+
+```text
+<task-root>/<ROLE>/
+<task-root>/versions/<version>/<ROLE>/
+<task-root>/documents/
+<task-root>/planning-with-files/
+```
+
+`planning-with-files/` 只用于已确认的复杂、多阶段虚拟团队实施；PRD、架构讨论、咨询、文档任务、窄范围修改和普通单 Agent 工作不会强制启用。
+
+`.rd-team/` 用于保存计划、讨论记录、报告和其他辅助产物。本仓库已经通过 `.gitignore` 忽略该目录。在其他 Git 项目中使用时，如果项目尚未忽略 `.rd-team/`，建议将它加入本地 `.git/info/exclude`，这样不会修改受版本控制的文件，也不会让运行产物进入业务代码提交；只有团队希望共享这条规则时才写入项目 `.gitignore`。
 
 ## 本地开发规范
 
@@ -199,7 +219,8 @@ Meeting Room 用于讨论、评审和决策，不替代 `/team` 的交付流程�
 ## 自定义
 
 - 修改角色能力：编辑 `agents/rd-team/<role>.toml`。
-- 修改团队流程：编辑 `skills/team/SKILL.md` 和 `agents/rd-team/routing.toml`。
+- 修改团队流程：编辑 `skills/team/SKILL.md`。
+- 修改角色路由与门禁：编辑 `skills/rd-team-routing/SKILL.md`。
 - 修改单角色入口：编辑 `skills/<role>/SKILL.md`。
 - 修改会议协议：编辑 `plugins/meeting-room/skills/meeting-room/SKILL.md`。
 - 修改插件展示信息：编辑 `plugins/meeting-room/.codex-plugin/plugin.json`。

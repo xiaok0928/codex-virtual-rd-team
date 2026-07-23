@@ -21,7 +21,7 @@ Treat `/BF` as a request to coordinate real virtual-team agents, not as a reques
 ## Workflow
 
 1. Strip the `/BF` prefix and treat the remainder as the actual work request.
-2. Use `rd-team-routing` to choose the smallest safe route.
+2. Use the `rd-team-routing` skill to choose the smallest safe route and task root.
 3. Prefer `fullstack_small` when the change needs both frontend and backend.
 4. Fall back to `backend_only_small` or `frontend_only_small` when only one side is needed.
 5. Follow each target project's local development guidance, build commands, and test conventions when present. If none exist, use existing code style and general engineering practices without requiring extra tools.
@@ -37,6 +37,16 @@ Treat `/BF` as a request to coordinate real virtual-team agents, not as a reques
 - Do not add PM, SA, QA, TPM, UI, or SRE unless the request clearly needs them.
 - Do not start BE and FE implementation before the shared API contract is confirmed.
 - Use parallel BE/FE development after interface alignment unless work is single-sided, both roles must modify the same files/modules, or one side has a hard dependency on the other's completed implementation.
+
+## Output Locations
+
+Store BF artifacts under one task root unless the target project defines another convention:
+
+```text
+<project-root>/.rd-team/<task_name>_<YYYYMMDD>/
+```
+
+Use `<task-root>/BE/`, `<task-root>/FE/`, and `<task-root>/documents/` for role and shared outputs. For eligible complex multi-stage work, use `<task-root>/planning-with-files/`. Keep `.rd-team/` out of source control, preferably through the project's local `.git/info/exclude`.
 
 ## Output
 

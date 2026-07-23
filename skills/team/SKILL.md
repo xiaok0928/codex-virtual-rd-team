@@ -27,7 +27,7 @@ The main agent coordinates the team, passes shared context, enforces checkpoints
 ## Workflow
 
 1. Treat the request after `/team` as the work item.
-2. Bring up real PM, SA, TPM, UI, BE, FE, QA, and SRE agents for visible initial alignment. Each role states its initial reading of the request.
+2. Use the `rd-team-routing` skill to establish the team route and one task root, then bring up real PM, SA, TPM, UI, BE, FE, QA, and SRE agents for visible initial alignment. Each role states its initial reading of the request.
 3. During initial alignment, UI must participate and give input on visual consistency, interaction complexity, page layout, design assets, cross-platform adaptation, implementation feasibility, experience risks, and design effort risks.
 4. Use the initial statements to surface gaps, disagreements, and shared assumptions until the team reaches a common understanding.
 5. PM produces the PRD for user confirmation.
@@ -37,8 +37,9 @@ The main agent coordinates the team, passes shared context, enforces checkpoints
    - UI and SA may discuss cross-impact issues, but neither should block the other unless design direction and system boundary have a real dependency.
 7. After UI is confirmed or skipped, and SA is confirmed, TPM decomposes work and assigns ownership for user confirmation. TPM must include UI work, deliverables, dependencies, and timing when UI is involved.
 8. After TPM is confirmed, enter execution:
+   - For complex multi-stage implementation, use file-based planning under the current task root. Do not require it for planning, consultation, documentation-only, narrow, or ordinary single-agent work.
    - Distribute work to real UI, BE, FE, QA, and SRE agents as needed, and run independent role work in parallel by default.
-   - UI produces current-version UI deliverables under `<version>/UI/`, including visual guidelines, HTML page designs, sliced assets, specs, and a Markdown file describing every output file's purpose and key points.
+   - UI produces current-version UI deliverables under `<task-root>/versions/<version>/UI/`, including visual guidelines, HTML page designs, sliced assets, specs, and a Markdown file describing every output file's purpose and key points.
    - UI submits completed deliverables to PM for confirmation. PM reviews against the PRD, current-version scope, business goals, and acceptance criteria.
    - If PM requests changes, UI updates relevant files and resubmits them. Repeat until UI and PM agree.
    - After PM confirms UI deliverables, ask the user to confirm UI deliverables before moving forward.
@@ -73,40 +74,34 @@ The main agent coordinates the team, passes shared context, enforces checkpoints
 
 ## Output Locations
 
+Use one task root unless the target project defines another output convention:
+
+```text
+<project-root>/.rd-team/<task_name>_<YYYYMMDD>/
+```
+
+Role-owned execution artifacts:
+
+```text
+<task-root>/<ROLE>/
+```
+
 Product-version deliverables:
 
 ```text
-<product-root>/<YYYYMMDD>_<version>/<ROLE>/
-```
-
-Example:
-
-```text
-demo/20260707_V0.0.1/UI/
+<task-root>/versions/<version>/<ROLE>/
 ```
 
 Shared final artifacts:
 
 ```text
-<product-root>/<YYYYMMDD>_<version>/documents/
+<task-root>/documents/
 ```
 
-Project-local execution artifacts:
+File-based planning when eligible:
 
 ```text
-<project-root>/.rd-team/<ROLE>/<task_name>_<YYYYMMDD>/
-```
-
-Example:
-
-```text
-demo/.rd-team/BE/create_role_20260707/
-```
-
-Shared project-local artifacts:
-
-```text
-<project-root>/.rd-team/documents/<task_name>_<YYYYMMDD>/
+<task-root>/planning-with-files/
 ```
 
 If the project defines local output, planning, or delivery-record conventions, follow them. Otherwise, the TEAM workflow does not require extra project-specific directories or records beyond the role outputs needed for the task.

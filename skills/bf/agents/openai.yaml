@@ -1,6 +1,6 @@
 interface:
   display_name: "BF"
-  short_description: "Route small BE/FE tasks"
+  short_description: "Route small backend and frontend delivery tasks"
   brand_color: "#0EA5E9"
   default_prompt: "$bf 新增一个告警阈值功能"
 policy:

@@ -5,34 +5,21 @@ description: Use when the user starts a request with /BE or explicitly asks for 
 
 # BE
 
-Use this skill when the user starts a request with `/BE` or explicitly asks for backend-only work.
-
-## Agent Delegation
-
-Treat `/BE` as a request to use the real virtual-team BE agent. If multi-agent tools are available, delegate to the current runtime's BE agent type, such as `be` after agent reload or `backend-developer` in older loaded sessions. The main agent coordinates and summarizes; it should only handle BE work locally when agent delegation is unavailable, and must say so.
+Treat `/BE` as a request to use the real BE agent. Keep work within the authorized backend scope.
 
 ## Workflow
 
-1. Strip the `/BE` prefix and treat the remainder as the work item.
-2. Delegate the work to the real BE agent when possible.
-3. Focus on backend implementation, API changes, data access, backend tests, performance safeguards, or backend bug fixes.
-4. Follow the target project's local development guidance, build commands, and test conventions when present. If none exist, use the existing code style and general backend engineering practices without requiring extra tools.
-5. Keep the role scoped to backend unless the user explicitly expands the work.
+1. Strip `/BE` and delegate to the real BE agent when possible.
+2. Inspect and follow the target project's local rules, architecture, code style, build commands, and test conventions. If none exist, use existing code patterns and general backend practices without requiring extra tools.
+3. Discover shared services, utilities, data access, and existing contracts before adding new implementations.
+4. Focus on backend behavior, APIs, persistence, performance, concurrency safety, tests, and defect fixes.
+5. For frontend integration, confirm route, method, request, response, errors, authorization, pagination, filtering, and sorting with FE before implementation.
+6. Add or update tests proportional to behavior changes and run affected validation. Isolate unrelated historical or environment failures.
 
-## Output Locations
-
-For TEAM work, follow the TEAM Output Locations rule. BE-owned artifacts go under `BE/`, and cross-role or shared final artifacts go under `documents/`.
-
-When working inside a project repository, use:
-
-```text
-.rd-team/BE/<task_name>_<YYYYMMDD>/
-```
-
-Keep `.rd-team/` out of source control. For Git projects without an existing ignore rule, prefer the local `.git/info/exclude` unless the project explicitly wants a shared `.gitignore` rule.
-
-If the project defines local output or delivery-record conventions, follow them. Otherwise, do not require an additional delivery record.
+Avoid unnecessary N+1 queries, unbounded reads, duplicate remote calls, hardcoded secrets, unrelated refactors, and changes outside backend ownership.
 
 ## Output
 
-State that BE agent execution is engaged, then summarize the backend focus and delegated result.
+Keep code and tests in the target repository. For TEAM work, follow the TEAM task root; standalone reports and process artifacts use `<project-root>/.rd-team/<task_name>_<YYYYMMDD>/BE/`, with shared outputs under `<task-root>/documents/`. Follow project-local output conventions when present and keep `.rd-team/` out of source control.
+
+State that BE agent execution is engaged, then summarize the backend focus, validation, and delegated result.

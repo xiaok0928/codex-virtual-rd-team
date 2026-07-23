@@ -5,57 +5,27 @@ description: Use when the user starts a request with /UI or when the virtual tea
 
 # UI
 
-Use this skill when the user starts a request with `/UI` or when the virtual team needs UI design support.
-
-## Agent Delegation
-
-Treat `/UI` as a request to use the real virtual-team UI agent. If multi-agent tools are available, delegate to the current runtime's UI agent type, such as `ui` after agent reload. The main agent coordinates and summarizes; it should only handle UI work locally when agent delegation is unavailable, and must say so.
+Treat `/UI` as a request to use the real UI agent. UI owns design delivery, not product scope or production frontend implementation.
 
 ## Responsibilities
 
-- Define visual direction: colors, typography, icon style, component feel, spacing scale, and cross-platform consistency.
-- Design HTML page or page set based on PM PRD and current-version scope.
-- Prepare icons, images, sliced assets, and design specs.
-- Annotate dimensions, spacing, color codes, typography, image usage, component states, empty/loading/error states, and interactions.
-- Write handoff documentation for FE.
+- Define visual direction, typography, color, icons, spacing, components, and cross-platform consistency.
+- Design required pages and loading, empty, error, permission, disabled, responsive, and interaction states.
+- Prepare HTML designs, images, icons, sliced assets, dimensions, specs, and FE handoff documentation.
+- During initial alignment, evaluate interaction complexity, adaptation cost, asset needs, feasibility, and experience risks.
 
 ## Workflow
 
-1. Strip the `/UI` prefix and treat the remainder as the work item.
-2. Delegate the work to the real UI agent when possible.
-3. Identify product version from PM PRD or user request; if missing, use `v0.1` and note the assumption.
-4. Define or extend visual direction, then design required HTML pages.
-5. Export assets, annotate specs, and write handoff documentation.
-6. Submit UI deliverables to PM; update until PM and UI agree, then wait for user confirmation before FE implementation.
-
-## Output Locations
-
-For product-version output:
-
-```text
-<product-root>/<YYYYMMDD>_<version>/UI/
-```
-
-For project-local execution artifacts:
-
-```text
-<project-root>/.rd-team/UI/<task_name>_<YYYYMMDD>/
-```
-
-Keep `.rd-team/` out of source control. For Git projects without an existing ignore rule, prefer the local `.git/info/exclude` unless the project explicitly wants a shared `.gitignore` rule.
-
-UI-owned artifacts such as visual guidelines, page designs, sliced assets, specs, and handoff notes go under `UI/`. Cross-role UI confirmation records may also go under `documents/`.
+1. Strip `/UI` and delegate to the real UI agent when possible.
+2. Use the confirmed PRD and version scope; if a standalone request omits a version, use `v0.1` and state the assumption.
+3. Submit UI deliverables to PM and iterate until they agree.
+4. Wait for user confirmation before FE implementation, then confirm the design contract with FE.
+5. Mark later design changes and notify FE and QA.
 
 ## Deliverables
 
-- `visual-guidelines.md`
-- `pages/`
-- `assets/`
-- `specs.md`
-- `README.md`
+Use `<task-root>/UI/` for working artifacts and `<task-root>/versions/<version>/UI/` for versioned deliverables. Include `visual-guidelines.md`, `pages/`, `assets/`, `specs.md`, and a `README.md` describing every file. Put shared confirmation and handoff records in `<task-root>/documents/`.
 
-If the project defines local output or delivery-record conventions, follow them. Otherwise, do not require an additional delivery record.
+For standalone work, `<task-root>` defaults to `<project-root>/.rd-team/<task_name>_<YYYYMMDD>/`. Follow project-local output conventions when present and keep `.rd-team/` out of source control.
 
-## Output
-
-State that UI agent execution is engaged, then summarize visual direction, page deliverables, asset deliverables, output folder, and delegated result.
+State that UI agent execution is engaged, then summarize visual direction, deliverables, output folder, and the delegated result.

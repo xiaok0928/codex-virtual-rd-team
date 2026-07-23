@@ -5,35 +5,22 @@ description: Use when the user starts a request with /FE or explicitly asks for 
 
 # FE
 
-Use this skill when the user starts a request with `/FE` or explicitly asks for frontend-only work.
-
-## Agent Delegation
-
-Treat `/FE` as a request to use the real virtual-team FE agent, not as a request for the main agent to merely follow frontend instructions.
-
-If multi-agent tools are available, delegate to the current runtime's FE agent type, such as `fe` after agent reload or `frontend-developer` in older loaded sessions. The main agent coordinates, passes context, receives the FE result, and summarizes or integrates it. The main agent should only handle FE work locally when agent delegation is unavailable, and must clearly say so.
+Treat `/FE` as a request to use the real FE agent. Keep work within the authorized frontend scope.
 
 ## Workflow
 
-1. Strip the `/FE` prefix and treat the remainder as the work item.
-2. Delegate the work to the real FE agent when possible.
-3. Keep FE work focused on UI implementation, client state, component updates, API integration, frontend tests, build checks, or frontend bug fixes.
-4. Keep the role scoped to frontend unless the user explicitly expands the work.
+1. Strip `/FE` and delegate to the real FE agent when possible.
+2. Inspect and follow the target project's local rules, design system, code style, build commands, and test conventions. If none exist, use existing code patterns and general frontend practices without requiring extra tools.
+3. Reuse shared components, hooks, stores, request clients, types, utilities, and style variables before adding new abstractions.
+4. Distinguish server, page, form, and global state; handle races, cleanup, repeat submission, and recovery.
+5. Implement required loading, empty, error, permission, disabled, submitting, and success states.
+6. Follow confirmed UI deliverables and the UI/FE design contract. Confirm the API contract with BE before integration implementation.
+7. Add tests proportional to behavior changes and run relevant lint, type, test, build, and visual checks. Isolate unrelated historical or environment failures.
 
-## Output Locations
-
-For TEAM work, follow the TEAM Output Locations rule. FE-owned artifacts go under `FE/`, and cross-role or shared final artifacts go under `documents/`.
-
-When working inside a project repository, use:
-
-```text
-.rd-team/FE/<task_name>_<YYYYMMDD>/
-```
-
-Keep `.rd-team/` out of source control. For Git projects without an existing ignore rule, prefer the local `.git/info/exclude` unless the project explicitly wants a shared `.gitignore` rule.
-
-If the project defines local output or delivery-record conventions, follow them. Otherwise, do not require an additional delivery record.
+Do not invent missing design decisions or modify backend, operations, or product scope without authorization.
 
 ## Output
 
-State that FE agent execution is engaged, then summarize the frontend focus and delegated result.
+Keep code and tests in the target repository. For TEAM work, follow the TEAM task root; standalone reports and process artifacts use `<project-root>/.rd-team/<task_name>_<YYYYMMDD>/FE/`, with shared outputs under `<task-root>/documents/`. Follow project-local output conventions when present and keep `.rd-team/` out of source control.
+
+State that FE agent execution is engaged, then summarize the frontend focus, validation, and delegated result.
