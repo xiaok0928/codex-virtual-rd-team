@@ -9,7 +9,7 @@
 ```text
 .
 ├── .agents/plugins/marketplace.json  # 仓库级插件市场
-├── agents/rd-team/                   # 8 个真实角色 Agent
+├── agents/rd-team/                   # 8 个团队角色 Agent + 1 个独立 CR Agent
 ├── plugins/meeting-room/             # 会议室插件
 └── skills/                           # 团队、路由及单角色入口 Skills
 ```
@@ -45,7 +45,7 @@ cp -R skills/. "$CODEX_HOME/skills/"
 cp -R agents/rd-team/. "$CODEX_HOME/agents/rd-team/"
 ```
 
-如果目标目录中已经存在同名配置，请先自行备份并确认差异。Agent 配置默认使用 `gpt-5.5`；若你的 Codex 环境没有该模型，请修改 `agents/rd-team/*.toml` 中的 `model` 字段为当前可用模型。
+如果目标目录中已经存在同名配置，请先自行备份并确认差异。Agent 配置不固定 `model` 字段，会继承当前 Codex 会话或全局配置中的模型；所有 Agent 默认使用 `high` 推理强度。若要切换模型，请修改 Codex 的全局或会话级模型配置，而不是为每个 Agent 单独添加模型覆盖。
 
 从旧版本升级时，路由已经由 `agents/rd-team/routing.toml` 迁移到 `skills/rd-team-routing/`。确认旧文件没有自定义内容后，可删除安装目录中遗留的 `agents/rd-team/routing.toml`，避免同时加载两套路由规则。
 

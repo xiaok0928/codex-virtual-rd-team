@@ -5,21 +5,35 @@ description: Use when the user starts a request with /QA or explicitly asks for 
 
 # QA
 
-Treat `/QA` as a request to use the real QA agent. Use confirmed PRD, UI deliverables, architecture constraints, and interface contracts as the test baseline.
+## Workspace configuration
+
+Read `~/.codex/AGENTS.md` first, resolve `DEFAULT_PROJECT_WORKSPACE`, and normalize it to an absolute path without a trailing slash. Use it as the default delivery root for `ai-doc`, virtual-team, planning, and delivery outputs. A delivery workspace explicitly supplied by the user overrides it for the current request. Do not infer the affected source repository from this path.
+
+Use this skill when the user starts a request with `/QA` or explicitly asks for quality validation.
+
+## Agent Delegation
+
+Treat `/QA` as a request to use the real virtual-team QA agent. If multi-agent tools are available, delegate to the current runtime's QA agent type, such as `qa` after agent reload or `qa-engineer` in older loaded sessions. The main agent coordinates and summarizes; it should only handle QA work locally when agent delegation is unavailable, and must say so.
 
 ## Workflow
 
-1. Strip `/QA` and delegate to the real QA agent when possible.
-2. Follow project-local test strategy, commands, coverage requirements, and report formats when present. Otherwise choose risk-based general test methods without requiring extra tools.
-3. Design normal, error, boundary, permission, concurrency, idempotency, compatibility, empty-value, and recovery cases as relevant.
-4. Lead test-case review with affected roles; escalate product or boundary disputes to PM and SA.
-5. Run suitable unit, API, component, integration, E2E, or project-supported validation and retain reproducible evidence.
-6. Track BE/FE fixes and retest until agreed cases pass or a clearly isolated blocker remains.
+1. Strip the `/QA` prefix and treat the remainder as the work item.
+2. Delegate the work to the real QA agent when possible.
+3. Focus on test design, boundary checks, validation strategy, test execution, bug reporting, and retesting.
+4. Keep the role scoped to QA unless the user explicitly expands the work.
 
-Only issue `LGTM` when all in-scope agreed cases pass and no in-scope blocking defect remains. Distinguish passed, failed, not run, environment-blocked, historical, and out-of-scope results. Do not fix production code unless explicitly authorized.
+## Output Locations
+
+For TEAM work, follow the TEAM Output Locations rule. For standalone QA work, store test cases, test plans, and execution notes under:
+
+```text
+${DEFAULT_PROJECT_WORKSPACE}/ai-doc/virtual-team/<task_name>_<YYYYMMDD>/QA/
+```
+
+Store final test reports, bug lists, acceptance records, and cross-role quality summaries under the same task root's `documents/` directory.
+
+For a standalone QA artifact, use `record-delivery` only when the user explicitly treats it as a performance-reviewable deliverable. Do not create one record per agent or role. Do not write QA artifacts to the project repository or `.local/` directories.
 
 ## Output
 
-Keep test code in the target repository. For TEAM work, follow the TEAM task root; standalone plans, execution records, and defect evidence use `<project-root>/.rd-team/<task_name>_<YYYYMMDD>/QA/`. Put final reports and shared quality records under `<task-root>/documents/`. Follow project-local output conventions when present and keep `.rd-team/` out of source control.
-
-State that QA agent execution is engaged, then summarize test scope, evidence, defects, conclusion, and the delegated result.
+State that QA agent execution is engaged, then summarize the testing focus and delegated result.

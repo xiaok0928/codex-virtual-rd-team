@@ -5,6 +5,10 @@ description: Use when the user starts a request with /BF or asks for a small fro
 
 # BF
 
+## Workspace configuration
+
+Read `~/.codex/AGENTS.md` first, resolve `DEFAULT_PROJECT_WORKSPACE`, and normalize it to an absolute path without a trailing slash. Use it as the default delivery root for `ai-doc`, virtual-team, planning, and delivery outputs. A delivery workspace explicitly supplied by the user overrides it for the current request. Do not infer the affected source repository from this path.
+
 Use for `/BF` small frontend/backend delivery.
 
 ## Agent Delegation
@@ -21,10 +25,10 @@ Treat `/BF` as a request to coordinate real virtual-team agents, not as a reques
 ## Workflow
 
 1. Strip the `/BF` prefix and treat the remainder as the actual work request.
-2. Use the `rd-team-routing` skill to choose the smallest safe route and task root.
+2. Use the `rd-team-routing` skill to choose the smallest safe route and canonical task root.
 3. Prefer `fullstack_small` when the change needs both frontend and backend.
 4. Fall back to `backend_only_small` or `frontend_only_small` when only one side is needed.
-5. Follow each target project's local development guidance, build commands, and test conventions when present. If none exist, use existing code style and general engineering practices without requiring extra tools.
+5. Apply the global and applicable project-level `AGENTS.md` development rules to implementation work.
 6. For `fullstack_small`, run two phases:
    - Interface alignment: real BE and FE agents first confirm the API contract together, including route, method, request parameters, response shape, error states, auth/permission needs, and pagination/filter/sort behavior when relevant.
    - Parallel development: after both agents confirm the API contract, BE and FE develop in parallel. BE owns backend interfaces, services, data handling, and targeted tests. FE owns UI implementation, state, API calls, interaction feedback, and targeted validation.
@@ -40,13 +44,17 @@ Treat `/BF` as a request to coordinate real virtual-team agents, not as a reques
 
 ## Output Locations
 
-Store BF artifacts under one task root unless the target project defines another convention:
+Store all BF artifacts under one virtual-team task root:
 
 ```text
-<project-root>/.rd-team/<task_name>_<YYYYMMDD>/
+${DEFAULT_PROJECT_WORKSPACE}/ai-doc/virtual-team/<task_name>_<YYYYMMDD>/
 ```
 
-Use `<task-root>/BE/`, `<task-root>/FE/`, and `<task-root>/documents/` for role and shared outputs. For eligible complex multi-stage work, use `<task-root>/planning-with-files/`. Keep `.rd-team/` out of source control, preferably through the project's local `.git/info/exclude`.
+Use `<task-root>/BE/`, `<task-root>/FE/`, and `<task-root>/documents/` for role and shared outputs. For eligible complex multi-stage work, store `planning-with-files` state under `<task-root>/planning-with-files/`.
+
+After eligible implementation and final validation, use `record-delivery` once for the shared requirement. Do not write BF artifacts or delivery records to a project repository or `.local/` directory.
+
+Before delegation, the main coordinator must create the canonical task root and confirm it is writable. If a role sandbox cannot write there, the role returns its artifact to the coordinator, which writes it to the canonical path; never fall back to another output directory.
 
 ## Output
 

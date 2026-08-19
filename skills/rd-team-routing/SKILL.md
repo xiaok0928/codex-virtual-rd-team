@@ -1,41 +1,42 @@
 ---
 name: rd-team-routing
-description: Route virtual R&D requests to the smallest safe set of real PM, UI, SA, TPM, BE, FE, QA, and SRE agents. Use when team, bf, or another coordinating virtual-team workflow must select roles, enforce contract gates, decide whether file-based planning is warranted, or establish portable task output paths. Do not use for ordinary single-agent work.
+description: Route virtual R&D requests to the smallest safe set of real PM, UI, SA, TPM, BE, FE, QA, and SRE agents. Use when team, bf, or a coordinating virtual-team workflow must select roles, enforce contract gates, decide whether planning-with-files is eligible, or establish the canonical ai-doc task and delivery paths. Do not use for ordinary single-agent work.
 ---
 
 # R&D Team Routing
 
+## Workspace configuration
+
+Read `~/.codex/AGENTS.md` first, resolve `DEFAULT_PROJECT_WORKSPACE`, and normalize it to an absolute path without a trailing slash. Use it as the default delivery root for `ai-doc`, virtual-team, planning, and delivery outputs. A delivery workspace explicitly supplied by the user overrides it for the current request. Do not infer the affected source repository from this path.
+
 Route work to real virtual-team agents. Never simulate a selected role.
 
-## Project Conventions
+## Canonical paths
 
-Before routing implementation work, inspect the target project's `AGENTS.md`, `Agent.md`, contribution guide, engineering documentation, build scripts, test commands, output rules, and other local conventions. Follow them when present. If the project has no local conventions, continue with its existing patterns and general engineering practices without requiring extra skills, tools, directories, or planning files.
-
-## Portable Paths
-
-Unless the target project defines another output convention, use one project-local task root:
+Use the default project workspace for every virtual-team artifact:
 
 ```text
-Task root: <project-root>/.rd-team/<task_name>_<YYYYMMDD>/
+Task root: ${DEFAULT_PROJECT_WORKSPACE}/ai-doc/virtual-team/<task_name>_<YYYYMMDD>/
 Role output: <task-root>/<ROLE>/
 Version output: <task-root>/versions/<version>/<ROLE>/
 Shared output: <task-root>/documents/
 Planning: <task-root>/planning-with-files/
+Delivery record: owned by `record-delivery` under the resolved delivery workspace
 ```
 
-Keep `.rd-team/` out of source control. For Git projects without an existing ignore rule, prefer the local `.git/info/exclude`; change the tracked `.gitignore` only when the user or project explicitly wants a shared rule. Create the task root before delegation. If a role cannot write there, have it return the artifact to the main coordinator for persistence instead of inventing another path.
+Create the task root before delegating. Never fall back to a project repository, product root, Codex session directory, or `.local/` directory. If a role's sandbox cannot write the canonical path, have that role return its artifact to the main coordinator and let the coordinator persist it there.
 
 ## Routes
 
-- `backend_only_small`: BE.
-- `frontend_only_small`: FE. Add UI only when the design contract is not settled.
+- `backend_only_small`: BE. Apply the global and applicable project-level `AGENTS.md` development rules.
+- `frontend_only_small`: FE. Add UI only when the design contract is not already settled.
 - `ui_only_small`: UI.
 - `fullstack_small`: BE + FE. Confirm the API contract before parallel implementation.
 - `ui_frontend_small`: UI + FE. Confirm the design contract before FE implementation.
-- `product_unclear`: PM, then TPM when implementation decomposition is needed.
+- `product_unclear`: PM, then TPM if implementation decomposition is needed.
 - `architecture_risk`: PM + SA + TPM plus relevant implementation roles.
-- `testing_risk`: add QA to the smallest applicable route.
-- `sre_risk`: add SRE when deployment, reliability, runtime, observability, rollback, or secrets are affected.
+- `testing_risk`: QA added to the smallest applicable route.
+- `sre_risk`: SRE added when deployment, reliability, runtime, observability, rollback, or secrets are affected.
 - `large_cross_module`: use the full `team` workflow.
 
 Prefer the smallest role set that safely covers the work. Do not add roles merely because they are available.
@@ -48,15 +49,16 @@ Prefer the smallest role set that safely covers the work. Do not add roles merel
 4. UI deliverables require PM review, user confirmation, then a UI/FE design contract.
 5. BE and FE confirm the API contract before integration implementation.
 6. QA cases require relevant-role review; PM and SA resolve disputed product or boundary expectations.
-7. Repeat test, fix, and retest until agreed cases pass or an unrelated environment failure is explicitly isolated.
+7. Repeat test, fix, and retest until agreed cases pass or an unrelated/environment failure is explicitly isolated.
 
-## Planning Eligibility
+## Planning eligibility
 
-Use file-based planning only when real virtual-team agents are engaged and confirmed implementation is complex and multi-stage. Do not require it for requirements, PRDs, architecture discussion, consultation, documentation-only work, narrow implementation, or ordinary single-agent execution.
+Activate `planning-with-files` only when real virtual-team agents are engaged and confirmed implementation is complex and multi-stage. Do not activate it for requirements, PRDs, architecture discussion, consultation, documentation-only work, narrow implementation, or ordinary single-agent execution.
 
-## Validation And Delivery
+## Validation and delivery
 
 - Require validation proportional to the changed scope.
-- Require all checks affected by the change to pass.
+- Require all tests and checks affected by the change to pass.
 - Isolate unrelated historical or environment failures instead of expanding scope.
-- Follow project-local delivery-record conventions when present; otherwise do not require an additional delivery record.
+- After eligible implementation and final validation, invoke `record-delivery` once for the shared requirement, not per role or iteration.
+- Let `record-delivery` own deduplication, existing-record updates, timestamps, and validation evidence.

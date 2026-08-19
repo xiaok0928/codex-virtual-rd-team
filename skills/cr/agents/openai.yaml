@@ -1,0 +1,9 @@
+interface:
+  display_name: "CR"
+  short_description: "独立代码审查、缺陷识别与质量风险分析专家"
+  icon_small: "./assets/expert.png"
+  icon_large: "./assets/expert.png"
+  brand_color: "#7C3AED"
+  default_prompt: "使用 $cr 审查当前代码变更并按严重度报告可操作问题。"
+policy:
+  allow_implicit_invocation: true

@@ -5,20 +5,35 @@ description: Use when the user starts a request with /SRE or explicitly asks for
 
 # SRE
 
-Treat `/SRE` as a request to use the real SRE agent. Keep work within the authorized deployment, infrastructure, and reliability scope.
+## Workspace configuration
+
+Read `~/.codex/AGENTS.md` first, resolve `DEFAULT_PROJECT_WORKSPACE`, and normalize it to an absolute path without a trailing slash. Use it as the default delivery root for `ai-doc`, virtual-team, planning, and delivery outputs. A delivery workspace explicitly supplied by the user overrides it for the current request. Do not infer the affected source repository from this path.
+
+Use this skill when the user starts a request with `/SRE` or explicitly asks for site reliability support.
+
+## Agent Delegation
+
+Treat `/SRE` as a request to use the real virtual-team SRE agent. If multi-agent tools are available, delegate to the current runtime's SRE agent type, such as `sre` after agent reload or `ops-engineer` in older loaded sessions. The main agent coordinates and summarizes; it should only handle SRE work locally when agent delegation is unavailable, and must say so.
 
 ## Workflow
 
-1. Strip `/SRE` and delegate to the real SRE agent when possible.
-2. Follow project-local deployment, environment, pipeline, secret-management, monitoring, and rollback conventions when present. Otherwise use general reliability and least-privilege practices without requiring extra tools.
-3. Assess CI/CD, containers, orchestration, IaC, configuration, monitoring, alerts, capacity, secrets, release, and rollback impact.
-4. Preserve least privilege, explicit resource boundaries, secret safety, auditability, and rollback paths.
-5. Run the applicable configuration, build, simulated deployment, smoke, monitoring, and rollback checks. Isolate unrelated historical or environment failures.
+1. Strip the `/SRE` prefix and treat the remainder as the work item.
+2. Delegate the work to the real SRE agent when possible.
+3. Focus on deployment, observability, runtime reliability, environment concerns, release risk, monitoring, rollback, and operational readiness.
+4. Keep the role scoped to SRE and reliability work unless the user explicitly expands the work.
 
-Do not bypass existing delivery paths, hardcode secrets, create unbounded resource configuration, expand permissions, or modify business behavior without authorization.
+## Output Locations
+
+For TEAM work, follow the TEAM Output Locations rule. For standalone SRE work, store SRE-owned artifacts under:
+
+```text
+${DEFAULT_PROJECT_WORKSPACE}/ai-doc/virtual-team/<task_name>_<YYYYMMDD>/SRE/
+```
+
+Store cross-role or shared final artifacts under the same task root's `documents/` directory.
+
+For a standalone SRE artifact, use `record-delivery` only when the user explicitly treats it as a performance-reviewable deliverable. Do not create one record per agent or role. Do not write SRE artifacts to the project repository or `.local/` directories.
 
 ## Output
 
-Keep CI/CD, IaC, and runtime configuration in the target repository. For TEAM work, follow the TEAM task root; standalone reports and process artifacts use `<project-root>/.rd-team/<task_name>_<YYYYMMDD>/SRE/`, with shared release and rollback conclusions under `<task-root>/documents/`. Follow project-local output conventions when present and keep `.rd-team/` out of source control.
-
-State that SRE agent execution is engaged, then summarize reliability impact, validation, rollback readiness, and the delegated result.
+State that SRE agent execution is engaged, then summarize reliability, runtime, release focus, and delegated result.

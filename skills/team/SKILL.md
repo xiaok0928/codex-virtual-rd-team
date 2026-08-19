@@ -5,6 +5,10 @@ description: Use when the user wants the full virtual R&D team to collaborate on
 
 # Team
 
+## Workspace configuration
+
+Read `~/.codex/AGENTS.md` first, resolve `DEFAULT_PROJECT_WORKSPACE`, and normalize it to an absolute path without a trailing slash. Use it as the default delivery root for `ai-doc`, virtual-team, planning, and delivery outputs. A delivery workspace explicitly supplied by the user overrides it for the current request. Do not infer the affected source repository from this path.
+
 Use for `TEAM` or `/team` requests.
 
 ## Agent Delegation
@@ -27,7 +31,7 @@ The main agent coordinates the team, passes shared context, enforces checkpoints
 ## Workflow
 
 1. Treat the request after `/team` as the work item.
-2. Use the `rd-team-routing` skill to establish the team route and one task root, then bring up real PM, SA, TPM, UI, BE, FE, QA, and SRE agents for visible initial alignment. Each role states its initial reading of the request.
+2. Bring up real PM, SA, TPM, UI, BE, FE, QA, and SRE agents for visible initial alignment. Each role states its initial reading of the request.
 3. During initial alignment, UI must participate and give input on visual consistency, interaction complexity, page layout, design assets, cross-platform adaptation, implementation feasibility, experience risks, and design effort risks.
 4. Use the initial statements to surface gaps, disagreements, and shared assumptions until the team reaches a common understanding.
 5. PM produces the PRD for user confirmation.
@@ -37,7 +41,7 @@ The main agent coordinates the team, passes shared context, enforces checkpoints
    - UI and SA may discuss cross-impact issues, but neither should block the other unless design direction and system boundary have a real dependency.
 7. After UI is confirmed or skipped, and SA is confirmed, TPM decomposes work and assigns ownership for user confirmation. TPM must include UI work, deliverables, dependencies, and timing when UI is involved.
 8. After TPM is confirmed, enter execution:
-   - For complex multi-stage implementation, use file-based planning under the current task root. Do not require it for planning, consultation, documentation-only, narrow, or ordinary single-agent work.
+   - For complex multi-stage execution, activate `planning-with-files` as a virtual-team-only workflow and store its files under the current virtual-team task directory.
    - Distribute work to real UI, BE, FE, QA, and SRE agents as needed, and run independent role work in parallel by default.
    - UI produces current-version UI deliverables under `<task-root>/versions/<version>/UI/`, including visual guidelines, HTML page designs, sliced assets, specs, and a Markdown file describing every output file's purpose and key points.
    - UI submits completed deliverables to PM for confirmation. PM reviews against the PRD, current-version scope, business goals, and acceptance criteria.
@@ -59,9 +63,6 @@ The main agent coordinates the team, passes shared context, enforces checkpoints
 
 ## Guardrails
 
-- Before development starts, inspect the target project's `AGENTS.md`, contribution guide, engineering docs, build scripts, test commands, output rules, and other local conventions. Follow them when present; they override the default development and output suggestions in this skill.
-- If the project has no local development conventions, do not block the workflow or require additional skills, tools, directories, or planning files. Use the existing codebase patterns and general engineering practices.
-- Keep `.rd-team/` out of source control. If a Git project does not already ignore it, prefer adding `.rd-team/` to the local `.git/info/exclude`; modify the tracked `.gitignore` only when the user or project explicitly wants a shared ignore rule.
 - PM and TPM checkpoints are sequential.
 - After PM confirmation, UI and SA checkpoints run in parallel when both are relevant.
 - TPM starts only after UI is confirmed or skipped, and SA is confirmed.
@@ -74,10 +75,10 @@ The main agent coordinates the team, passes shared context, enforces checkpoints
 
 ## Output Locations
 
-Use one task root unless the target project defines another output convention:
+Use one task root for every virtual-team artifact:
 
 ```text
-<project-root>/.rd-team/<task_name>_<YYYYMMDD>/
+${DEFAULT_PROJECT_WORKSPACE}/ai-doc/virtual-team/<task_name>_<YYYYMMDD>/
 ```
 
 Role-owned execution artifacts:
@@ -92,21 +93,27 @@ Product-version deliverables:
 <task-root>/versions/<version>/<ROLE>/
 ```
 
-Shared final artifacts:
+Shared final artifacts and cross-role records:
 
 ```text
 <task-root>/documents/
 ```
 
-File-based planning when eligible:
+Virtual-team planning files when eligible:
 
 ```text
-<task-root>/planning-with-files/
+<task-root>/planning-with-files/task_plan.md
+<task-root>/planning-with-files/findings.md
+<task-root>/planning-with-files/progress.md
 ```
 
-If the project defines local output, planning, or delivery-record conventions, follow them. Otherwise, the TEAM workflow does not require extra project-specific directories or records beyond the role outputs needed for the task.
+After eligible virtual-team implementation is complete and QA or final validation has passed, invoke `record-delivery` exactly once for the requirement. Do not create one record per PM, UI, SA, TPM, BE, FE, QA, or SRE role; let `record-delivery` own the location, deduplication, history, validation evidence, and useful role contribution summary.
 
 Role folder names are `PM`, `UI`, `SA`, `TPM`, `BE`, `FE`, `QA`, and `SRE`.
+
+Do not write virtual-team artifacts to project repositories, product roots, Codex session directories, or any `.local/` directory. The default project workspace `ai-doc` tree is authoritative even when the affected code repository lives elsewhere.
+
+Before delegation, the main coordinator must create the canonical task root and confirm it is writable. If a role sandbox cannot write there, the role returns its artifact to the coordinator, which writes it to the canonical path; never fall back to another output directory.
 
 ## Output
 

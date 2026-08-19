@@ -1,7 +1,7 @@
 interface:
   display_name: "UI"
-  short_description: "Visual design, page design, and UI handoff"
+  short_description: "Design systems, accessible UI, page design, assets, and FE handoff"
   brand_color: "#F97316"
-  default_prompt: "$ui 设计一个功能页面并输出切图与标注"
+  default_prompt: "$ui 设计一个可访问、响应式的功能页面，并输出设计系统、切图与前端标注"
 policy:
   allow_implicit_invocation: true
