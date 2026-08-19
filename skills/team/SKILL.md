@@ -26,12 +26,17 @@ Real team roles:
 - QA: `qa` after reload, or `qa-engineer` in older loaded sessions
 - SRE: `sre` after reload, or `ops-engineer` in older loaded sessions
 
+Optional standalone role:
+
+- CR: `cr` for explicit code review requests only. CR is available under the virtual-team Agent set, but is intentionally excluded from the default TEAM workflow, initial alignment, routing, checkpoints, and work assignment.
+
 The main agent coordinates the team, passes shared context, enforces checkpoints, tracks parallel work, resolves handoff order, integrates results, and summarizes. If multi-agent delegation is unavailable, clearly state the fallback before doing any role work locally.
 
 ## Workflow
 
 1. Treat the request after `/team` as the work item.
 2. Bring up real PM, SA, TPM, UI, BE, FE, QA, and SRE agents for visible initial alignment. Each role states its initial reading of the request.
+   CR is intentionally not brought up or assigned during this default alignment.
 3. During initial alignment, UI must participate and give input on visual consistency, interaction complexity, page layout, design assets, cross-platform adaptation, implementation feasibility, experience risks, and design effort risks.
 4. Use the initial statements to surface gaps, disagreements, and shared assumptions until the team reaches a common understanding.
 5. PM produces the PRD for user confirmation.
@@ -60,6 +65,7 @@ The main agent coordinates the team, passes shared context, enforces checkpoints
    - After testing fully passes, QA outputs the final test report.
    - The main agent tracks role progress, keeps each role's output visible without collapsing it into a summary, merges results, resolves conflicts, and performs final integration validation.
 9. If the user later targets a single role directly, use that real role agent instead.
+   A direct `/CR` or explicit CR delegation is supported independently of the TEAM workflow.
 
 ## Guardrails
 
@@ -72,6 +78,7 @@ The main agent coordinates the team, passes shared context, enforces checkpoints
 - Do not let BE and FE begin integration implementation before their shared API contract is confirmed.
 - Do not treat QA test cases as final until relevant team members have reviewed and agreed on them.
 - Do not finish the TEAM workflow before QA has tested against agreed cases, BE/FE have fixed reported bugs, all agreed cases pass, and QA has produced the final test report.
+- Do not add CR to default TEAM alignment, routing, checkpoints, or work assignment; engage it only through an explicit `/CR` request or direct delegation.
 
 ## Output Locations
 

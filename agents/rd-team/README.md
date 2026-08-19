@@ -6,6 +6,8 @@ Read `~/.codex/AGENTS.md` first, resolve `DEFAULT_PROJECT_WORKSPACE`, and normal
 
 This directory contains the real PM, UI, SA, TPM, BE, FE, QA, and SRE Agent role definitions. Triggering, routing, and shared workflow rules live under `~/.codex/skills/`.
 
+The standalone `cr.toml` Agent is also available for explicit code review requests. It is part of the virtual-team Agent set but is intentionally excluded from the default TEAM workflow and work assignment.
+
 ## Roles
 
 - `pm.toml`: product scope, PRD, acceptance criteria, risk and product decisions.
@@ -16,6 +18,7 @@ This directory contains the real PM, UI, SA, TPM, BE, FE, QA, and SRE Agent role
 - `fe.toml`: frontend pages, components, client state, API integration and frontend validation.
 - `qa.toml`: test cases, review, execution, defects, retesting and final quality reporting.
 - `sre.toml`: delivery pipelines, infrastructure, observability, release, rollback and reliability.
+- `cr.toml`: standalone code review for explicit `/CR` requests; not assigned by the default TEAM workflow.
 
 `routing.toml` is intentionally absent. Routing is a workflow, not an Agent role, and is implemented by the `rd-team-routing` Skill.
 

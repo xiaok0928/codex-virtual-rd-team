@@ -18,7 +18,7 @@ description: Use when the user starts a request with /CR or explicitly asks the 
 3. 主协调 Agent 传递审查目标、基线、已知约束和授权边界，并完整呈现 CR 发现。
 4. 当前会话尚未加载 `cr` 时，明确说明需要重新加载或重启；必要时可按本 Skill 本地完成审查，但不得伪称已调用独立 Agent。
 
-CR 是独立 Agent 角色，当前不加入 TEAM、BF 或其他虚拟团队流程。
+CR 是虚拟团队 Agent 集合中的独立角色，但当前不加入 TEAM、BF 或其他默认虚拟团队执行流程。
 
 ## Review contract
 
