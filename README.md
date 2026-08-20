@@ -23,7 +23,7 @@
 | BE | 后端业务、API、持久化、性能与后端测试 |
 | FE | 页面实现、组件与状态、接口联调、前端测试与构建 |
 | QA | 测试方案、用例评审、执行、缺陷反馈、回归与质量报告 |
-| SRE | CI/CD、部署、可观测性、可靠性、回滚与发布准备 |
+| SRE | 可靠性工程、CI/CD、发布回滚、可观测性、事故响应与基础设施运维 |
 | CR | 独立代码审查；仅响应显式 `/CR` 请求，不参与 TEAM 默认流程 |
 
 `rd-team-routing` 是团队内部的统一路由 Skill。它负责选择最小安全角色集合、建立契约门禁、判断复杂实施是否需要文件化计划，并统一 `.rd-team/` 产物结构。通常不需要由用户直接调用。
@@ -102,7 +102,7 @@ Codex 官方文档说明了 `.codex-plugin/plugin.json`、仓库级 `.agents/plu
 | `/BE` | 后端实现、API、数据访问或后端缺陷 | 仅启用 BE Agent |
 | `/FE` | 前端页面、组件、状态或接口集成 | 仅启用 FE Agent |
 | `/QA` | 测试设计、回归、质量验收 | 仅启用 QA Agent |
-| `/SRE` | 部署、流水线、监控、可靠性与回滚 | 仅启用 SRE Agent |
+| `/SRE` | 发布、可靠性、监控、事故响应与基础设施运维 | 仅启用 SRE Agent |
 | `/Meeting-room` | 多角色讨论、评审与决策 | 启动 Meeting Room 插件并创建真实参会 Agents |
 
 `/BF` 会通过 `rd-team-routing` 选择最小安全路线。除了 `backend_only_small`、`frontend_only_small` 和 `fullstack_small`，路由层还支持 `ui_only_small`、`ui_frontend_small`、`product_unclear`、`architecture_risk`、`testing_risk`、`sre_risk` 和 `large_cross_module`。只有风险或规模确实需要时才增加角色。

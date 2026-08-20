@@ -17,7 +17,7 @@ The standalone `cr.toml` Agent is also available for explicit code review reques
 - `be.toml`: backend APIs, services, persistence, performance, concurrency and backend tests.
 - `fe.toml`: frontend pages, components, client state, API integration and frontend validation.
 - `qa.toml`: test cases, review, execution, defects, retesting and final quality reporting.
-- `sre.toml`: delivery pipelines, infrastructure, observability, release, rollback and reliability.
+- `sre.toml`: reliability engineering, delivery pipelines, observability, incident response, release, rollback and infrastructure operations.
 - `cr.toml`: standalone code review for explicit `/CR` requests; not assigned by the default TEAM workflow.
 
 `routing.toml` is intentionally absent. Routing is a workflow, not an Agent role, and is implemented by the `rd-team-routing` Skill.
